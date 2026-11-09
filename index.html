@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Zephy’s Art Gallery</title>
+<meta name="description" content="Original canvases for sale: fluid acrylic pours, sculpted mixed media and painted scenes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Hanken+Grotesk:wght@400..600&display=swap">
+<style>
+/* Layout: a gallery wall where every canvas hangs to scale on one eye line, then catalogue bays with museum wall labels */
+:root {
+  --wall: #ebece8;        /* painted gallery wall, cool stone */
+  --wall-shade: #e0e2dd;  /* recessed wall, viewer stage */
+  --paper: #f5f6f3;       /* label card, panels */
+  --ink: #17181a;         /* label text */
+  --ink-soft: #5a5d58;    /* secondary label text */
+  --rule: #cdd0ca;
+  --gilt: #7d5718;        /* bronze, used for prices and focus */
+  --dot: #c21a2c;         /* the red "sold" dot */
+  --on-ink: #f5f6f3;
+  --spot: rgba(255, 255, 255, .6);
+  --sh-1: rgba(22, 24, 20, .10);
+  --sh-2: rgba(22, 24, 20, .15);
+  --sh-3: rgba(22, 24, 20, .32);
+  --scrim: rgba(16, 17, 15, .55);
+  --font-display: "Bodoni Moda", "Bodoni 72", Didot, "Bodoni MT", Georgia, serif;
+  --font-body: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --t-small: .8125rem;
+  --t-body: 1rem;
+  --t-label: 1.5rem;
+  --t-h2: clamp(2.125rem, 1.5rem + 2.4vw, 3.375rem);
+  --t-mark: clamp(4.25rem, 1rem + 11vw, 11rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --wall: #121311; --wall-shade: #181a17; --paper: #1c1e1b; --ink: #ecede9; --ink-soft: #a3a69f; --rule: #2f322d;
+    --gilt: #d6ad62; --dot: #e5484d; --on-ink: #121311; --spot: rgba(255, 236, 204, .10);
+    --sh-1: rgba(0, 0, 0, .35); --sh-2: rgba(0, 0, 0, .45); --sh-3: rgba(0, 0, 0, .7); --scrim: rgba(0, 0, 0, .72);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --wall: #121311; --wall-shade: #181a17; --paper: #1c1e1b; --ink: #ecede9; --ink-soft: #a3a69f; --rule: #2f322d;
+  --gilt: #d6ad62; --dot: #e5484d; --on-ink: #121311; --spot: rgba(255, 236, 204, .10);
+  --sh-1: rgba(0, 0, 0, .35); --sh-2: rgba(0, 0, 0, .45); --sh-3: rgba(0, 0, 0, .7); --scrim: rgba(0, 0, 0, .72);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html:has(.viewer[open]) { overflow: hidden; }
+body {
+  background: var(--wall);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 30; background: var(--wall);
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--gilt); outline-offset: 3px; }
+h1, h2, h3, p { margin: 0; }
+
+.wrap {
+  width: 100%; max-width: 1240px; margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 720px) {
+  .wrap {
+    padding-left: max(40px, env(safe-area-inset-left, 0px));
+    padding-right: max(40px, env(safe-area-inset-right, 0px));
+  }
+}
+
+/* ---------- header ---------- */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--wall) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent; transition: border-color .25s;
+}
+.top.is-stuck { border-bottom-color: var(--rule); }
+.top__in { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.mark {
+  display: inline-flex; align-items: baseline; gap: .55em; text-decoration: none; color: var(--ink);
+  font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 1.375rem; line-height: 1;
+}
+.mark small {
+  font-family: var(--font-body); font-style: normal; font-weight: 500; font-size: .6875rem;
+  letter-spacing: .24em; text-transform: uppercase; color: var(--ink-soft);
+}
+.top__nav { display: flex; gap: clamp(16px, 3vw, 30px); }
+.top__nav a {
+  text-decoration: none; font-weight: 500; font-size: .9375rem; padding-block: 6px;
+  background: linear-gradient(var(--gilt), var(--gilt)) 0 100% / 0 1.5px no-repeat;
+  transition: background-size .25s;
+}
+.top__nav a:hover { background-size: 100% 1.5px; }
+@media (max-width: 560px) { .mark small, .top__nav .opt { display: none; } }
+
+/* ---------- hero ---------- */
+.hero { padding-block: clamp(28px, 6vw, 72px) 0; scroll-margin-top: 60px; }
+.hero__head { display: grid; gap: 28px 56px; align-items: end; }
+@media (min-width: 900px) { .hero__head { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } }
+.hero__mark { container-type: inline-size; min-width: 0; }
+.eyebrow {
+  font-size: .75rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft);
+  font-weight: 500; margin-bottom: 18px;
+}
+.wm { font-weight: normal; }
+.wm__name {
+  display: block; font-family: var(--font-display); font-style: italic; font-weight: 500;
+  font-size: min(var(--t-mark), 27cqw); line-height: .86; letter-spacing: -.025em;
+}
+.wm__kind {
+  display: block; margin-top: 18px; padding-left: .2em;
+  font-size: clamp(.8125rem, .72rem + .45vw, 1.0625rem); font-weight: 500;
+  letter-spacing: .42em; text-transform: uppercase;
+}
+.hero__aside { min-width: 0; padding-bottom: 6px; }
+.lede { font-size: clamp(1.0625rem, 1rem + .35vw, 1.25rem); line-height: 1.5; max-width: 34ch; margin-bottom: 22px; text-wrap: pretty; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 560px) { .cta .btn { flex: 1 1 auto; padding: 0 16px; } }
+.facts { margin-top: 18px; font-size: var(--t-small); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 0 20px; border-radius: 2px; border: 1px solid var(--ink);
+  font: 600 .9375rem/1 var(--font-body); letter-spacing: .01em; text-decoration: none; cursor: pointer;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.btn--ink { background: var(--ink); color: var(--on-ink); }
+.btn--ink:hover { background: transparent; color: var(--ink); }
+.btn--line { background: transparent; color: var(--ink); }
+.btn--line:hover { background: var(--ink); color: var(--on-ink); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:disabled:hover { background: var(--ink); color: var(--on-ink); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+
+/* ---------- the wall ---------- */
+.wall { margin: clamp(4px, 2vw, 24px) 0 0; }
+.wall__scroller {
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  container-type: inline-size;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wall__scroller::-webkit-scrollbar { display: none; }
+.wall.is-scrollable .wall__scroller {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+.wall__row {
+  --gap: clamp(14px, 2.4cqw, 30px);
+  --cm: clamp(2.5px, (100cqw - 7 * var(--gap) - 56px) / 295, 3.6px);
+  display: flex; align-items: center; gap: var(--gap);
+  width: max-content; margin-inline: auto; padding: 76px 28px 40px;
+  overflow-x: clip;
+}
+.hung {
+  position: relative; flex: none; display: block;
+  width: calc(var(--w) * var(--cm)); aspect-ratio: var(--w) / var(--h);
+  transition: transform .35s cubic-bezier(.2, .7, .3, 1);
+}
+.hung::before, .bay::before {
+  content: ""; position: absolute; pointer-events: none;
+  background: radial-gradient(ellipse 50% 50% at 50% 42%, var(--spot), transparent 72%);
+}
+.hung::before { left: -45%; right: -45%; top: -40%; height: 125%; }
+.hung img {
+  position: relative; display: block; width: 100%; height: 100%; object-fit: cover;
+  box-shadow: 0 1px 1px var(--sh-1), 0 6px 10px -4px var(--sh-2), 0 22px 30px -16px var(--sh-3);
+  transform-origin: 50% -14%;
+  animation: settle 1.9s cubic-bezier(.25, .6, .3, 1) backwards;
+  animation-delay: calc(var(--i) * 90ms + 150ms);
+}
+.hung:hover { transform: translateY(-4px); }
+.hung:focus-visible { outline-offset: 6px; }
+.hung[data-status="sold"]::after, .hung[data-status="reserved"]::after {
+  content: ""; position: absolute; right: 0; bottom: -18px; width: 9px; height: 9px; border-radius: 50%;
+}
+.hung[data-status="sold"]::after { background: var(--dot); }
+.hung[data-status="reserved"]::after { border: 2px solid var(--dot); }
+@keyframes settle {
+  0% { transform: rotate(2.4deg); }
+  30% { transform: rotate(-1.5deg); }
+  55% { transform: rotate(.8deg); }
+  78% { transform: rotate(-.3deg); }
+  100% { transform: rotate(0); }
+}
+.wall__cap {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px;
+  font-size: var(--t-small); color: var(--ink-soft);
+}
+.wall__cap p { max-width: 60ch; }
+.wall__meta { display: inline-flex; align-items: center; gap: 22px; }
+.scale { display: inline-flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scale__bar { display: block; height: 7px; width: 150px; border: 1.5px solid var(--ink-soft); border-top: 0; }
+.wall__hint { white-space: nowrap; }
+.wall:not(.is-scrollable) .wall__hint { display: none; }
+
+/* ---------- sections ---------- */
+.section { padding-block: clamp(64px, 9vw, 120px); scroll-margin-top: 60px; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
+.sec-title {
+  font-family: var(--font-display); font-weight: 500; font-size: var(--t-h2); line-height: 1.04;
+  letter-spacing: -.012em; text-wrap: balance;
+}
+.sec-title em { font-style: italic; }
+.count { color: var(--ink-soft); font-size: .9375rem; font-variant-numeric: tabular-nums; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 0 24px; margin-top: 26px; border-bottom: 1px solid var(--rule); }
+.filter {
+  appearance: none; background: none; border: 0; position: relative; cursor: pointer;
+  padding: 10px 0 12px; font: 500 .9375rem/1.2 var(--font-body); color: var(--ink-soft);
+}
+.filter sup { font-size: .6875rem; margin-left: 3px; font-variant-numeric: tabular-nums; }
+.filter:hover { color: var(--ink); }
+.filter[aria-pressed="true"] { color: var(--ink); }
+.filter[aria-pressed="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gilt); }
+.filter-note { margin-top: 14px; color: var(--ink-soft); font-size: .9375rem; max-width: 62ch; min-height: 3.1em; }
+
+.works {
+  list-style: none; margin: clamp(28px, 4vw, 44px) 0 0; padding: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px 32px;
+}
+@media (min-width: 560px) { .works { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px 28px; } }
+@media (min-width: 1080px) { .works { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 64px 32px; } }
+.card { min-width: 0; }
+.card > a { display: grid; gap: 18px; text-decoration: none; }
+.bay { position: relative; display: flex; align-items: center; justify-content: flex-start; aspect-ratio: 4 / 5; container-type: size; }
+.bay::before { left: -12%; right: 0; top: -14%; height: 92%; }
+.bay img {
+  position: relative; display: block; height: auto;
+  width: min(100cqw, 100cqh * var(--ar)); aspect-ratio: var(--ar);
+  box-shadow: 0 1px 1px var(--sh-1), 0 6px 12px -5px var(--sh-2), 0 26px 34px -18px var(--sh-3);
+  transition: transform .35s cubic-bezier(.2, .7, .3, 1), box-shadow .35s;
+}
+.card > a:hover .bay img {
+  transform: translateY(-5px);
+  box-shadow: 0 2px 2px var(--sh-1), 0 12px 18px -6px var(--sh-2), 0 38px 44px -20px var(--sh-3);
+}
+.card > a:focus-visible { outline-offset: 8px; }
+
+.label { display: grid; gap: 1px; font-size: .9375rem; line-height: 1.45; }
+.label > span { display: block; }
+.label__no { font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-variant-numeric: tabular-nums; margin-bottom: 6px; }
+.label__title {
+  font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: var(--t-label);
+  line-height: 1.1; margin-bottom: 4px; text-wrap: balance;
+}
+.card > a:hover .label__title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.label__meta { color: var(--ink-soft); }
+.label__sale { display: flex !important; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; font-variant-numeric: tabular-nums; }
+.price { font-weight: 600; font-size: 1.0625rem; color: var(--gilt); font-variant-numeric: tabular-nums; }
+.status { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-soft); font-size: .875rem; }
+.status--sold::before, .status--reserved::before { content: ""; width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.status--sold::before { background: var(--dot); }
+.status--reserved::before { border: 2px solid var(--dot); }
+
+/* ---------- how buying works ---------- */
+.band { background: var(--wall-shade); }
+.steps { list-style: none; margin: 36px 0 0; padding: 0; display: grid; gap: 32px 40px; }
+@media (min-width: 820px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 18px; align-items: baseline; border-top: 1px solid var(--rule); padding-top: 20px; }
+.step__n { grid-row: span 2; font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 2.75rem; line-height: .9; color: var(--gilt); font-variant-numeric: lining-nums; }
+.step h3 { font-size: 1.125rem; font-weight: 600; }
+.step p { color: var(--ink-soft); max-width: 40ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 36px; font-size: .9375rem; color: var(--ink-soft); }
+.legend .status { color: var(--ink); font-weight: 500; }
+
+/* ---------- contact ---------- */
+.contact { display: grid; gap: 28px 56px; align-items: start; }
+@media (min-width: 900px) { .contact { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
+.contact__text { margin-top: 14px; color: var(--ink-soft); max-width: 44ch; }
+.channels { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.channel {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 16px;
+  padding: 16px 18px; background: var(--paper); border: 1px solid var(--rule); border-radius: 2px;
+}
+.channel__k { grid-column: 1; font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+.channel__v { grid-column: 1; font-size: 1.0625rem; font-weight: 500; overflow-wrap: anywhere; user-select: all; }
+.channel__act {
+  grid-column: 2; grid-row: 1 / span 2; appearance: none; background: none; cursor: pointer;
+  border: 1px solid var(--ink); border-radius: 2px; color: var(--ink); text-decoration: none;
+  font: 600 .875rem/1 var(--font-body); padding: 11px 14px; white-space: nowrap;
+}
+.channel__act:hover { background: var(--ink); color: var(--on-ink); }
+.channel--empty { display: block; background: transparent; border-style: dashed; color: var(--ink-soft); }
+
+/* ---------- footer ---------- */
+.foot { border-top: 1px solid var(--rule); }
+.foot__in { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 32px; padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px)); font-size: var(--t-small); color: var(--ink-soft); }
+.foot__in p { max-width: 60ch; }
+
+/* ---------- viewer ---------- */
+.viewer {
+  padding: 0; border: 0; margin: 0; width: 100%; height: 100%; max-width: 100%; max-height: 100%;
+  background: var(--paper); color: var(--ink); overflow: hidden;
+}
+.viewer[open] { animation: rise .32s cubic-bezier(.2, .7, .3, 1); }
+.viewer::backdrop { background: var(--scrim); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+.v-grid { height: 100%; overflow-y: auto; overscroll-behavior: contain; }
+.v-stage {
+  position: relative; display: grid; place-items: center; container-type: size;
+  height: 60vh; height: min(62svh, 640px);
+  background: var(--wall-shade);
+  padding: calc(64px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) 72px max(20px, env(safe-area-inset-left, 0px));
+  touch-action: pan-y;
+}
+.v-img {
+  display: block; height: auto; object-fit: cover;
+  width: min(100cqw, 100cqh * var(--ar, .75)); aspect-ratio: var(--ar, .75);
+  box-shadow: 0 2px 2px var(--sh-1), 0 10px 18px -8px var(--sh-2), 0 34px 50px -24px var(--sh-3);
+  transition: opacity .25s;
+}
+.v-img.is-wall { box-shadow: none; outline: 1px solid var(--rule); }
+.v-img.is-loading { opacity: .4; }
+.v-count {
+  position: absolute; top: calc(26px + env(safe-area-inset-top, 0px)); left: max(20px, env(safe-area-inset-left, 0px));
+  font-size: var(--t-small); color: var(--ink-soft); font-variant-numeric: tabular-nums;
+}
+.v-foot { position: absolute; left: 0; right: 0; bottom: 16px; display: flex; justify-content: center; pointer-events: none; }
+.v-views { pointer-events: auto; display: inline-flex; padding: 3px; gap: 2px; background: var(--paper); border: 1px solid var(--rule); border-radius: 999px; }
+.v-view {
+  appearance: none; border: 0; background: transparent; cursor: pointer; border-radius: 999px;
+  padding: 8px 14px; font: 500 .8125rem/1 var(--font-body); color: var(--ink-soft);
+}
+.v-view[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); }
+.iconbtn {
+  position: absolute; z-index: 5; width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; background: var(--paper); color: var(--ink); border: 1px solid var(--rule);
+  transition: border-color .2s;
+}
+.iconbtn:hover { border-color: var(--ink); }
+.iconbtn svg { width: 20px; height: 20px; }
+.v-close { top: calc(14px + env(safe-area-inset-top, 0px)); right: max(14px, env(safe-area-inset-right, 0px)); box-shadow: 0 2px 10px var(--sh-2); }
+.v-title:focus { outline: none; }
+.v-prev { bottom: 12px; left: max(14px, env(safe-area-inset-left, 0px)); }
+.v-next { bottom: 12px; right: max(14px, env(safe-area-inset-right, 0px)); }
+
+.v-info {
+  display: flex; flex-direction: column;
+  padding: 28px max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px));
+}
+.v-title {
+  font-family: var(--font-display); font-style: italic; font-weight: 500;
+  font-size: clamp(2.125rem, 1.7rem + 1.5vw, 2.875rem); line-height: 1.02; margin: 6px 0 10px; text-wrap: balance;
+}
+.v-medium { color: var(--ink-soft); margin-bottom: 22px; }
+.v-specs { margin: 0 0 22px; border-top: 1px solid var(--rule); }
+.v-specs div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--rule); font-size: .9375rem; }
+.v-specs dt { color: var(--ink-soft); }
+.v-specs dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.v-about { line-height: 1.6; max-width: 60ch; margin-bottom: 26px; }
+.v-buybar {
+  position: sticky; bottom: 0; z-index: 2; margin-top: auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 0 calc(14px + env(safe-area-inset-bottom, 0px));
+  background: var(--paper); border-top: 1px solid var(--rule);
+}
+.v-buybar .price { font-size: 1.375rem; }
+.buy { display: grid; gap: 14px; padding: 24px 0 calc(32px + env(safe-area-inset-bottom, 0px)); }
+.buy h3 { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 1.625rem; line-height: 1.1; outline: none; }
+.buy p { color: var(--ink-soft); }
+.buy label { font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+.buy textarea {
+  width: 100%; min-height: 108px; resize: vertical; padding: 12px 14px; border-radius: 2px;
+  font: 1rem/1.5 var(--font-body); color: var(--ink); background: var(--wall); border: 1px solid var(--rule);
+}
+.buy textarea:focus { border-color: var(--ink); outline: none; }
+.buy__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.buy__actions .btn { flex: 1 1 auto; }
+.pay { display: grid; gap: 10px; justify-items: start; margin-top: 6px; padding-top: 18px; border-top: 1px solid var(--rule); }
+.pay__title { margin: 0; font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+.buy__note { font-size: .875rem; }
+.copied { min-height: 1.4em; font-size: .875rem; color: var(--gilt); font-weight: 500; }
+
+@media (min-width: 900px) {
+  .viewer {
+    width: min(1200px, calc(100% - 48px)); height: min(820px, calc(100% - 48px)); margin: auto;
+    border-radius: 3px; box-shadow: 0 30px 80px -20px var(--sh-3);
+  }
+  .v-grid { display: grid; grid-template-columns: minmax(0, 1fr) 400px; grid-template-rows: minmax(0, 1fr); overflow: hidden; }
+  .v-stage { height: auto; padding: 64px 84px 80px; }
+  .v-info { overflow-y: auto; overscroll-behavior: contain; padding: 60px 40px 0; }
+  .v-close { top: 14px; right: 14px; }
+  .v-count { top: 26px; left: 28px; }
+  .v-prev, .v-next { bottom: auto; top: 50%; translate: 0 -50%; }
+  .v-prev { left: 20px; }
+  .v-next { right: 20px; }
+  .buy { padding-bottom: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+<link rel="canonical" href="https://zephyartgallery.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317181a'/%3E%3Ctext x='32' y='47' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='46' fill='%23f5f6f3'%3EZ%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Zephy’s Art Gallery">
+<meta property="og:title" content="Zephy’s Art Gallery">
+<meta property="og:description" content="Original canvases for sale: fluid acrylic pours, sculpted mixed media and painted scenes.">
+<meta property="og:url" content="https://zephyartgallery.com/">
+<meta property="og:image" content="https://zephyartgallery.com/img/portal-987.jpg">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<header class="top" id="top-bar">
+  <div class="wrap top__in">
+    <a class="mark" href="#top">Zephy’s <small>Art Gallery</small></a>
+    <nav class="top__nav" aria-label="Sections">
+      <a href="#collection">Collection</a>
+      <a href="#how-to-buy" class="opt">How to buy</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="top" aria-labelledby="wm">
+    <div class="wrap hero__head">
+      <div class="hero__mark">
+        <p class="eyebrow">Original canvases for sale</p>
+        <h1 class="wm" id="wm"><span class="wm__name">Zephy’s</span><span class="wm__kind">Art Gallery</span></h1>
+      </div>
+      <div class="hero__aside">
+        <p class="lede">Fluid pours, sculpted mixed media and painted scenes, all made by hand. Every piece is one of a kind.</p>
+        <p class="cta">
+          <a class="btn btn--ink" href="#collection">See the collection</a>
+          <a class="btn btn--line" href="#how-to-buy">How buying works</a>
+        </p>
+        <p class="facts" id="facts"></p>
+      </div>
+    </div>
+
+    <figure class="wall" id="wall" aria-label="Gallery wall with every work hung to scale">
+      <div class="wall__scroller" id="wall-scroller">
+        <div class="wall__row" id="wall-row"></div>
+      </div>
+      <figcaption class="wrap wall__cap">
+        <p id="wall-text">Every work hung to scale on one eye line. Tap a canvas to see it up close.</p>
+        <span class="wall__meta">
+          <span class="wall__hint">Swipe along the wall →</span>
+          <span class="scale"><span class="scale__bar" id="scale-bar"></span>50 cm</span>
+        </span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap section" id="collection" aria-labelledby="collection-title">
+    <div class="sec-head">
+      <h2 class="sec-title" id="collection-title">The <em>collection</em></h2>
+      <p class="count" id="count"></p>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter by technique"></div>
+    <p class="filter-note" id="filter-note" aria-live="polite"></p>
+    <ol class="works" id="works"></ol>
+  </section>
+
+  <section class="band" id="how-to-buy" aria-labelledby="how-title">
+    <div class="wrap section">
+      <h2 class="sec-title" id="how-title">How buying <em>works</em></h2>
+      <ol class="steps">
+        <li class="step">
+          <span class="step__n">1</span>
+          <h3>Pick a canvas</h3>
+          <p>Open any work to see it up close. Some pieces also have a photo on a real wall, which helps you judge the size.</p>
+        </li>
+        <li class="step">
+          <span class="step__n">2</span>
+          <h3>Send one message</h3>
+          <p>Tap “Buy this piece” and the message is written for you, with the title, size and price. You only have to send it.</p>
+        </li>
+        <li class="step">
+          <span class="step__n">3</span>
+          <h3>Make it yours</h3>
+          <p id="step-pay">Zephy confirms the piece is yours and arranges payment and pickup or delivery with you. Nothing is paid on this site.</p>
+        </li>
+      </ol>
+      <p class="legend">
+        <span><span class="status status--sold">Sold</span> A red dot on a label means the work has sold, the way galleries mark it.</span>
+        <span><span class="status status--reserved">Reserved</span> An open ring means someone is holding it.</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap section" id="contact" aria-labelledby="contact-title">
+    <div class="contact">
+      <div>
+        <h2 class="sec-title" id="contact-title">Ask about <em>a piece</em></h2>
+        <p class="contact__text">Questions about a size, hanging or delivery? Message Zephy directly.</p>
+      </div>
+      <ul class="channels" id="channels"></ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span class="mark">Zephy’s <small>Art Gallery</small></span>
+    <p>Every work is an original, photographed as it is. Colours can look slightly different on screen.</p>
+    <p>© <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<dialog class="viewer" id="viewer" aria-labelledby="v-title">
+  <button type="button" class="iconbtn v-close" id="v-close" aria-label="Close">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div class="v-grid" id="v-grid">
+    <div class="v-stage" id="v-stage">
+      <span class="v-count" id="v-count"></span>
+      <img class="v-img" id="v-img" alt="">
+      <button type="button" class="iconbtn v-prev" id="v-prev" aria-label="Previous work">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button type="button" class="iconbtn v-next" id="v-next" aria-label="Next work">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <div class="v-foot">
+        <div class="v-views" id="v-views" role="group" aria-label="Photo">
+          <button type="button" class="v-view" data-view="canvas" aria-pressed="true">Canvas</button>
+          <button type="button" class="v-view" data-view="wall" aria-pressed="false">On the wall</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="v-info" id="v-info">
+      <p class="label__no" id="v-no"></p>
+      <h2 class="v-title" id="v-title" tabindex="-1"></h2>
+      <p class="v-medium" id="v-medium"></p>
+      <dl class="v-specs">
+        <div><dt>Size (w × h)</dt><dd id="v-size"></dd></div>
+        <div><dt>Edition</dt><dd>Original, one of one</dd></div>
+        <div><dt>Status</dt><dd id="v-status"></dd></div>
+      </dl>
+      <p class="v-about" id="v-about"></p>
+      <div class="v-buybar">
+        <span class="price" id="v-price"></span>
+        <button type="button" class="btn btn--ink" id="v-buy" aria-controls="buy" aria-expanded="false">Buy this piece</button>
+      </div>
+      <section class="buy" id="buy" hidden aria-labelledby="buy-title">
+        <h3 id="buy-title" tabindex="-1"></h3>
+        <p id="buy-lead"></p>
+        <label for="buy-msg">Your message</label>
+        <textarea id="buy-msg" rows="4"></textarea>
+        <div class="buy__actions">
+          <a class="btn btn--ink" id="buy-wa" href="#" target="_blank" rel="noopener" hidden>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.8 9.8 0 0 0-8.4 14.8L2.3 21.8l4.9-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.7 4.2 3.8 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.4-.3z"/></svg>
+            Send on WhatsApp
+          </a>
+          <button type="button" class="btn btn--line" id="buy-copy">Copy message</button>
+        </div>
+        <p class="copied" id="buy-status" role="status" aria-live="polite"></p>
+        <ul class="channels" id="buy-channels"></ul>
+        <div class="pay" id="buy-pay" hidden>
+          <h4 class="pay__title">Pay with PayPal</h4>
+          <p>Once Zephy confirms the piece is yours, pay here and put the title in the PayPal note.</p>
+          <a class="btn btn--line" id="buy-pp" href="#" target="_blank" rel="noopener">Pay with PayPal ↗</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ============================================================
+     How buyers reach Zephy:
+       whatsapp  — international format, digits only (e.g. "32470123456")
+       email     — e.g. "hello@example.com"
+       instagram — handle without the @
+       tiktok    — handle without the @
+     PAYPAL_ME — the PayPal.Me name (the part after paypal.me/).
+       Adds a "Pay with PayPal" button with each work's price filled in.
+     ============================================================ */
+  const CONTACT = { whatsapp: "", email: "", instagram: "", tiktok: "https://www.tiktok.com/@parlseyjustcreates" };
+  const PAYPAL_ME = "";
+
+  const img = (name, sw, sh, lw, lh) => ({
+    ar: lw / lh,
+    src: `img/${name}-${sw}.jpg`,
+    srcset: `img/${name}-${sw}.jpg ${sw}w, img/${name}-${lw}.jpg ${lw}w`
+  });
+
+  /* The works. status: "available", "reserved" or "sold". Sizes are width × height in cm. */
+  const WORKS = [
+    { id: "venenum", no: 1, cat: "mixed", title: "Venenum",
+      medium: "Foam roses, sculpted vines and acrylic on canvas", w: 50, h: 70, price: 120, status: "available",
+      about: "Dozens of blush and ivory foam roses fill the centre of a black canvas. Painted contour lines ripple outward, and sculpted vines with red thorns cross the corners. It is a 3D piece, so it changes as you walk past.",
+      alt: "Blush and ivory foam roses clustered on a black canvas, ringed by silver contour lines and green thorny vines",
+      img: img("roses", 732, 1000, 1439, 1965) },
+    { id: "purple-mineral", no: 2, cat: "fluid", title: "Purple Mineral",
+      medium: "Acrylic pour with glitter on canvas", w: 30, h: 40, price: 150, status: "available",
+      about: "A slow spiral of violet, plum and white, finished with glitter that catches the light. Deep purple edges frame a bright, cloud-like centre.",
+      alt: "Purple, plum and white paint swirling across a deep violet canvas",
+      img: img("purple", 759, 1000, 1518, 2000), wall: img("purple-wall", 799, 1000, 1059, 1325) },
+    { id: "another-world", no: 3, cat: "mixed", title: "Another World",
+      medium: "Acrylic pour, dot work and relief on canvas", w: 50, h: 50, price: 800, status: "available",
+      about: "A poured core of gold, violet and olive sits inside a raised, stone-like rim. Hundreds of hand-painted white dots surround it like a field of stars.",
+      alt: "A gold, violet and olive pour inside a raised grey rim, surrounded by white dots on black",
+      img: img("portal", 987, 1000, 1975, 2000), wall: img("portal-wall", 800, 1000, 1500, 1875) },
+    { id: "lemon-dream", no: 4, cat: "fluid", title: "Lemon Dream",
+      medium: "Acrylic pour on canvas", w: 40, h: 50, price: 122, status: "available",
+      about: "Ochre, honey and soft white pulled into long, flowing ribbons. A warm, calm piece that lifts a plain wall.",
+      alt: "Ochre, honey and white paint flowing in long ribbons",
+      img: img("golden", 799, 1000, 1433, 1794) },
+    { id: "dream-of-no-return", no: 5, cat: "painted", title: "Dream of No Return",
+      medium: "Acrylic on canvas", w: 40, h: 30, price: 122, status: "available",
+      about: "A corridor of red frames and blue doors runs to the vanishing point, and every door is watching. A surreal painting with a playful edge.",
+      alt: "A long corridor of red frames and blue doors, each door painted with a watching eye",
+      img: img("corridor", 1000, 746, 1439, 1073) },
+    { id: "gravity-of-sea", no: 6, cat: "fluid", title: "Gravity of Sea",
+      medium: "Acrylic pour with glitter on canvas", w: 30, h: 40, price: 120, status: "available",
+      about: "Cobalt and white waves rise from the bottom of the canvas. The upper half has a glittering, textured surface that shimmers under light.",
+      alt: "Cobalt blue and white waves with a glittering surface",
+      img: img("blue", 748, 1000, 816, 1091), wall: img("blue-wall", 800, 1000, 1500, 1875) },
+    { id: "crow-from-window", no: 7, cat: "painted", title: "Crow From Window",
+      medium: "Acrylic on canvas", w: 25, h: 30, price: 99, status: "available",
+      about: "A lone crow wanders through a meadow scattered with dandelions. A quiet spring scene, as seen from a window.",
+      alt: "A crow in a green meadow dotted with yellow dandelions",
+      img: img("crow", 847, 1000, 1439, 1698) },
+    { id: "lagoon-swirle", no: 8, cat: "fluid", title: "Lagoon Swirle",
+      medium: "Acrylic pour on canvas", w: 30, h: 40, price: 122, status: "available",
+      about: "Layers of moss and lime green ripple across the canvas, with flashes of copper and cobalt where the colours meet.",
+      alt: "Moss and lime green paint rippling in waves with copper and blue accents",
+      img: img("green", 748, 1000, 855, 1143), wall: img("green-wall", 800, 1000, 1500, 1875) }
+  ];
+
+  /* Left-to-right order on the hero wall */
+  const WALL = ["lemon-dream", "gravity-of-sea", "crow-from-window", "venenum", "purple-mineral", "another-world", "dream-of-no-return", "lagoon-swirle"];
+
+  const CATS = {
+    all: { label: "All", note: "Every work here is an original. When it sells, it’s gone." },
+    fluid: { label: "Fluid pours", note: "Acrylic paint is poured onto the canvas and tilted until it settles. The pattern can’t be repeated, so no two pours are alike." },
+    mixed: { label: "Mixed media", note: "Paint plus real materials: foam roses, sculpted vines, a raised rim and hundreds of hand-placed dots. These works stand off the canvas." },
+    painted: { label: "Painted", note: "Scenes painted by hand in acrylic, from a quiet meadow to a corridor that looks back at you." }
+  };
+  const STATUS = { available: "Available", reserved: "Reserved", sold: "Sold" };
+
+  /* ---------- helpers ---------- */
+  const $ = (s, el = document) => el.querySelector(s);
+  const byId = Object.fromEntries(WORKS.map(w => [w.id, w]));
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const euro = n => "€" + Number(n).toLocaleString("en-IE");
+  const dims = w => `${w.w} × ${w.h} cm`;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const digits = s => String(s || "").replace(/\D/g, "");
+  const waNumber = digits(CONTACT.whatsapp);
+  const igHandle = String(CONTACT.instagram || "").replace(/^@/, "").trim();
+  const email = String(CONTACT.email || "").trim();
+  const ttHandle = String(CONTACT.tiktok || "").trim().replace(/^(https?:\/\/)?(www\.|m\.)?tiktok\.com\//i, "").replace(/^@/, "").split(/[/?#]/)[0];
+  const ppName = String(PAYPAL_ME || "").replace(/^(https?:\/\/)?(www\.)?paypal\.me\//i, "").split(/[/?#]/)[0].trim();
+  const paypalLink = w => `https://paypal.me/${encodeURIComponent(ppName)}/${w.price}EUR`;
+  const prettyPhone = d => /^32\d{9}$/.test(d) ? d.replace(/^(\d{2})(\d{3})(\d{2})(\d{2})(\d{2})$/, "+$1 $2 $3 $4 $5") : "+" + d;
+
+  /* ---------- hero facts ---------- */
+  const avail = WORKS.filter(w => w.status !== "sold");
+  const byArea = [...WORKS].sort((a, b) => a.w * a.h - b.w * b.h);
+  const minPrice = Math.min(...(avail.length ? avail : WORKS).map(w => w.price));
+  $("#facts").textContent = `${WORKS.length} works · from ${euro(minPrice)} · ${dims(byArea[0]).replace(" cm", "")} to ${dims(byArea[byArea.length - 1])}`;
+  $("#year").textContent = new Date().getFullYear();
+
+  /* ---------- the wall ---------- */
+  const row = $("#wall-row");
+  row.innerHTML = WALL.map(id => byId[id]).filter(Boolean).map((w, i) => `
+    <a class="hung" href="#${w.id}" data-status="${w.status}" style="--w:${w.w};--h:${w.h};--i:${i}"
+       aria-label="${esc(w.title)}, ${dims(w)}, ${euro(w.price)}${w.status !== "available" ? ", " + STATUS[w.status] : ""}">
+      <img src="${w.img.src}" alt="" decoding="async"${i > 4 ? ' loading="lazy"' : ""}>
+    </a>`).join("");
+  $("#wall-text").textContent = `All ${WORKS.length} works hung to scale on one eye line. Tap a canvas to see it up close.`;
+
+  const wallEl = $("#wall"), scroller = $("#wall-scroller"), scaleBar = $("#scale-bar");
+  function measureWall() {
+    wallEl.classList.toggle("is-scrollable", scroller.scrollWidth > scroller.clientWidth + 2);
+    const ref = row.querySelector(".hung");
+    if (ref) {
+      const cm = ref.getBoundingClientRect().width / parseFloat(ref.style.getPropertyValue("--w"));
+      if (cm > 0) scaleBar.style.width = (50 * cm).toFixed(1) + "px";
+    }
+  }
+  if ("ResizeObserver" in window) new ResizeObserver(measureWall).observe(scroller);
+  else addEventListener("resize", measureWall);
+  measureWall();
+
+  /* ---------- collection ---------- */
+  const list = $("#works");
+  list.innerHTML = WORKS.map(w => `
+    <li class="card" data-cat="${w.cat}">
+      <a href="#${w.id}">
+        <span class="bay"><img src="${w.img.src}" srcset="${w.img.srcset}" sizes="(min-width: 1080px) 280px, (min-width: 560px) 46vw, 88vw"
+          alt="" style="--ar:${w.img.ar.toFixed(4)}" loading="lazy" decoding="async"></span>
+        <span class="label">
+          <span class="label__no">No. ${w.no}</span>
+          <h3 class="label__title">${esc(w.title)}</h3>
+          <span class="label__meta">${esc(w.medium)}</span>
+          <span class="label__meta">${dims(w)}</span>
+          <span class="label__sale"><span class="price">${euro(w.price)}</span><span class="status status--${w.status}">${STATUS[w.status]}</span></span>
+        </span>
+      </a>
+    </li>`).join("");
+  $("#count").textContent = `${WORKS.length} works · ${WORKS.filter(w => w.status === "available").length} available`;
+
+  const counts = WORKS.reduce((a, w) => (a[w.cat] = (a[w.cat] || 0) + 1, a), {});
+  const filtersEl = $("#filters");
+  filtersEl.innerHTML = Object.entries(CATS).map(([k, c]) =>
+    `<button type="button" class="filter" data-cat="${k}" aria-pressed="false">${c.label}<sup>${k === "all" ? WORKS.length : (counts[k] || 0)}</sup></button>`).join("");
+  let currentCat = "all";
+  function setFilter(cat) {
+    currentCat = CATS[cat] ? cat : "all";
+    filtersEl.querySelectorAll(".filter").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.cat === currentCat)));
+    list.querySelectorAll(".card").forEach(li => { li.hidden = currentCat !== "all" && li.dataset.cat !== currentCat; });
+    $("#filter-note").textContent = CATS[currentCat].note;
+  }
+  filtersEl.addEventListener("click", e => { const b = e.target.closest(".filter"); if (b) setFilter(b.dataset.cat); });
+  setFilter("all");
+
+  /* ---------- contact channels ---------- */
+  function channels() {
+    const out = [];
+    if (waNumber) out.push({ k: "WhatsApp", v: prettyPhone(waNumber), href: `https://wa.me/${waNumber}`, act: "Open chat ↗" });
+    if (ttHandle) out.push({ k: "TikTok", v: "@" + ttHandle, href: `https://www.tiktok.com/@${encodeURIComponent(ttHandle)}`, act: "Open profile ↗" });
+    if (igHandle) out.push({ k: "Instagram", v: "@" + igHandle, href: `https://instagram.com/${encodeURIComponent(igHandle)}`, act: "Open profile ↗" });
+    if (email) out.push({ k: "Email", v: email, copy: email, act: "Copy address" });
+    return out;
+  }
+  function renderChannels(el, inBuy) {
+    /* in the buy panel, linked channels are shown as buttons instead, so only copyable ones (email) stay listed */
+    const items = channels().filter(c => !(inBuy && c.href));
+    el.innerHTML = items.map(c => `
+      <li class="channel">
+        <span class="channel__k">${c.k}</span>
+        <span class="channel__v">${esc(c.v)}</span>
+        ${c.href
+          ? `<a class="channel__act" href="${esc(c.href)}" target="_blank" rel="noopener">${c.act}</a>`
+          : `<button type="button" class="channel__act" data-copy="${esc(c.copy)}">${c.act}</button>`}
+      </li>`).join("");
+    return items.length;
+  }
+  if (!renderChannels($("#channels"), false)) {
+    $("#channels").innerHTML = `<li class="channel channel--empty">Contact details for buying will appear here soon.</li>`;
+  }
+
+  /* Copy through the older execCommand route first, which still works in app views that block the
+     clipboard API, then through the clipboard API. Both start inside the tap, as browsers require. */
+  function legacyCopy(text) {
+    const host = document.querySelector("#viewer[open]") || document.body;
+    const t = document.createElement("textarea");
+    t.value = text;
+    t.setAttribute("readonly", "");
+    t.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none";
+    const prev = document.activeElement;
+    host.appendChild(t);
+    let ok = false;
+    try {
+      t.focus({ preventScroll: true });
+      t.select();
+      t.setSelectionRange(0, text.length);
+      ok = document.execCommand("copy");
+    } catch (_) {}
+    t.remove();
+    try { if (prev && prev.focus) prev.focus({ preventScroll: true }); } catch (_) {}
+    return ok;
+  }
+  async function copyText(text, statusEl, selectEl, okText, failText) {
+    let ok = legacyCopy(text);
+    if (!ok && navigator.clipboard) {
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (_) {}
+    }
+    if (ok) {
+      statusEl.textContent = okText || "Copied";
+    } else {
+      if (selectEl) {
+        if (selectEl.select) { selectEl.focus(); selectEl.select(); }
+        else { const r = document.createRange(); r.selectNodeContents(selectEl); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      }
+      statusEl.textContent = failText || "Selected. Copy it with your keyboard or a long press.";
+    }
+    clearTimeout(statusEl._t);
+    statusEl._t = setTimeout(() => { statusEl.textContent = ""; }, okText ? 8000 : 3200);
+  }
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    const v = b.closest(".channel")?.querySelector(".channel__v");
+    const status = b.closest(".buy") ? $("#buy-status") : null;
+    if (status) copyText(b.dataset.copy, status, v);
+    else {
+      const prev = b.textContent;
+      navigator.clipboard?.writeText(b.dataset.copy).then(() => { b.textContent = "Copied"; }, () => {
+        if (v) { const r = document.createRange(); r.selectNodeContents(v); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+        b.textContent = "Selected";
+      }).finally(() => setTimeout(() => { b.textContent = prev; }, 2200));
+    }
+  });
+
+  /* ---------- viewer ---------- */
+  const dlg = $("#viewer"), vImg = $("#v-img"), vGrid = $("#v-grid"), vInfo = $("#v-info");
+  const buyBtn = $("#v-buy"), buyPanel = $("#buy"), msg = $("#buy-msg"), waBtn = $("#buy-wa");
+  let open = null, view = "canvas", pushed = false;
+
+  function navList() {
+    const l = WORKS.filter(w => currentCat === "all" || w.cat === currentCat);
+    return open && l.includes(open) ? l : WORKS;
+  }
+  function messageFor(w) {
+    if (w.status === "sold") return `Hi Zephy! I love “${w.title}” (No. ${w.no}), which has sold. Do you have anything similar for sale?`;
+    if (w.status === "reserved") return `Hi Zephy! I’m interested in “${w.title}” (No. ${w.no}, ${dims(w)}, ${euro(w.price)}). If the reservation falls through, I’d like to buy it.`;
+    return `Hi Zephy! I’d like to buy “${w.title}” (No. ${w.no}, ${dims(w)}, ${euro(w.price)}). Is it still available?`;
+  }
+  function updateWa() { if (waNumber) waBtn.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg.value)}`; }
+
+  function setView(v) {
+    view = v === "wall" && open.wall ? "wall" : "canvas";
+    const im = view === "wall" ? open.wall : open.img;
+    vImg.classList.add("is-loading");
+    vImg.classList.toggle("is-wall", view === "wall");
+    vImg.style.setProperty("--ar", im.ar.toFixed(4));
+    vImg.sizes = "(min-width: 900px) 62vw, 100vw";
+    vImg.srcset = im.srcset;
+    vImg.src = im.src;
+    vImg.alt = view === "wall" ? `${open.title} hanging on a wall` : open.alt;
+    if (vImg.complete && vImg.naturalWidth) vImg.classList.remove("is-loading");
+    dlg.querySelectorAll(".v-view").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.view === view)));
+  }
+  vImg.addEventListener("load", () => vImg.classList.remove("is-loading"));
+  vImg.addEventListener("error", () => vImg.classList.remove("is-loading"));
+  dlg.querySelectorAll(".v-view").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+
+  function show(w) {
+    const changed = open !== w;
+    open = w;
+    if (changed) view = "canvas";
+    const l = navList();
+    $("#v-count").textContent = `${l.indexOf(w) + 1} / ${l.length}`;
+    $("#v-no").textContent = `No. ${w.no}`;
+    $("#v-title").textContent = w.title;
+    $("#v-medium").textContent = w.medium;
+    $("#v-size").textContent = dims(w);
+    $("#v-status").innerHTML = `<span class="status status--${w.status}">${STATUS[w.status]}</span>`;
+    $("#v-about").textContent = w.about;
+    $("#v-price").textContent = euro(w.price);
+    $("#v-views").hidden = !w.wall;
+    setView(view);
+
+    buyBtn.textContent = w.status === "sold" ? "Ask for similar work" : w.status === "reserved" ? "Ask about this piece" : "Buy this piece";
+    buyBtn.setAttribute("aria-expanded", "false");
+    buyPanel.hidden = true;
+    $("#buy-title").textContent = w.status === "sold" ? "Ask for something similar" : w.status === "reserved" ? `Ask about “${w.title}”` : `Buy “${w.title}”`;
+    $("#buy-lead").textContent = w.status === "available"
+      ? "Send Zephy this message. You’ll get a reply about payment, and pickup or delivery."
+      : "Send Zephy this message and you’ll hear back.";
+    msg.value = messageFor(w);
+    waBtn.hidden = !waNumber;
+    updateWa();
+    $("#buy-status").textContent = "";
+    if (!renderChannels($("#buy-channels"), true) && !waNumber && !ttHandle && !igHandle) {
+      $("#buy-channels").innerHTML = `<li class="channel channel--empty">Contact details for buying will appear here soon. Copy your message to keep it handy.</li>`;
+    }
+    $("#buy-pay").hidden = !ppName || w.status === "sold";
+    if (ppName) {
+      const pp = $("#buy-pp");
+      pp.href = paypalLink(w);
+      pp.textContent = `Pay ${euro(w.price)} with PayPal ↗`;
+    }
+
+    if (!dlg.open) {
+      dlg.showModal();
+      $("#v-title").focus({ preventScroll: true });
+    }
+    if (changed) { vGrid.scrollTop = 0; vInfo.scrollTop = 0; }
+  }
+
+  const fromHash = () => { try { return byId[decodeURIComponent(location.hash.slice(1))] || null; } catch (_) { return null; } };
+  const urlWithHash = h => { const u = new URL(location.href); u.hash = h; return u.href; };
+  function clearHash() { try { history.replaceState(null, "", urlWithHash("")); } catch (_) {} }
+  function route() {
+    const w = fromHash();
+    if (w) show(w);
+    else if (dlg.open) dlg.close();
+  }
+  function requestClose() {
+    if (pushed && fromHash()) {
+      pushed = false;
+      history.back();
+      setTimeout(() => { if (dlg.open && !fromHash()) dlg.close(); else if (dlg.open) { clearHash(); dlg.close(); } }, 350);
+    } else {
+      clearHash();
+      if (dlg.open) dlg.close();
+    }
+  }
+  function go(d) {
+    if (!open) return;
+    const l = navList();
+    const next = l[(l.indexOf(open) + d + l.length) % l.length];
+    try { location.replace(urlWithHash(next.id)); } catch (_) {}
+    if (fromHash() !== next) show(next);
+  }
+
+  document.addEventListener("click", e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (a && !dlg.open && byId[a.getAttribute("href").slice(1)]) pushed = true;
+  }, true);
+  addEventListener("hashchange", route);
+  dlg.addEventListener("cancel", e => { e.preventDefault(); requestClose(); });
+  dlg.addEventListener("click", e => { if (e.target === dlg) requestClose(); });
+  dlg.addEventListener("close", () => { open = null; });
+  $("#v-close").addEventListener("click", requestClose);
+  $("#v-prev").addEventListener("click", () => go(-1));
+  $("#v-next").addEventListener("click", () => go(1));
+  dlg.addEventListener("keydown", e => {
+    if (e.target.closest("textarea, input")) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
+  });
+
+  let sx = 0, sy = 0, tracking = false;
+  const stage = $("#v-stage");
+  stage.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1 || e.target.closest("button")) { tracking = false; return; }
+    tracking = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+  stage.addEventListener("touchend", e => {
+    if (!tracking) return;
+    tracking = false;
+    const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) go(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  buyBtn.addEventListener("click", () => {
+    buyPanel.hidden = false;
+    buyBtn.setAttribute("aria-expanded", "true");
+    buyPanel.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    $("#buy-title").focus({ preventScroll: true });
+  });
+  msg.addEventListener("input", updateWa);
+  $("#buy-copy").addEventListener("click", () => copyText(msg.value, $("#buy-status"), msg));
+
+  /* TikTok and Instagram can't take a prefilled message, so these buttons copy it first, then open the profile */
+  const buyActions = $(".buy__actions"), copyBtn = $("#buy-copy");
+  [["TikTok", ttHandle && `https://www.tiktok.com/@${encodeURIComponent(ttHandle)}`],
+   ["Instagram", igHandle && `https://instagram.com/${encodeURIComponent(igHandle)}`]]
+    .filter(([, href]) => href)
+    .forEach(([k, href], i) => {
+      const a = document.createElement("a");
+      a.className = "btn " + (!waNumber && i === 0 ? "btn--ink" : "btn--line");
+      a.href = href; a.target = "_blank"; a.rel = "noopener";
+      a.dataset.copyMsg = k;
+      a.textContent = `Copy message & open ${k} ↗`;
+      buyActions.insertBefore(a, copyBtn);
+    });
+  buyActions.addEventListener("click", e => {
+    const a = e.target.closest("[data-copy-msg]");
+    if (a) copyText(msg.value, $("#buy-status"), null,
+      `Message copied. Paste it into a ${a.dataset.copyMsg} message to Zephy.`,
+      "Couldn’t copy automatically. Press and hold your message above to copy it, then paste it on " + a.dataset.copyMsg + ".");
+  });
+  if (ppName) $("#step-pay").textContent = "Zephy confirms the piece is yours. You pay with PayPal, then arrange pickup or delivery together.";
+
+  /* ---------- header state ---------- */
+  const topBar = $("#top-bar");
+  const onScroll = () => topBar.classList.toggle("is-stuck", scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  route();
+})();
+</script>
+</body>
+</html>
